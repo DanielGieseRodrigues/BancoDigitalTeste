@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Login</title>
+    <meta charset="utf-8">
+    <script src="jquery-3.4.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+
+    <script src="vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script></script>
+
+</head>
+
+<body style="background-color: black">
+    <div id="app">
+        <div class="container login-container">
+            <div class="row">
+                <div class="col-md-6 login-form-1">
+                    <h3>Login Banco Digital</h3>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="inputLogin" v-model="inputLogin"
+                            placeholder="Seu login *" value="" />
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="inputSenha" v-model="inputSenha"
+                            placeholder="Sua senha*" value="" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" v-on:click="Autenticar()" class="btnSubmit" value="Login" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var app = new Vue({
+            el: '#app',
+            data: {
+                inputLogin: "",
+                inputSenha: "",
+            },
+            methods: {
+                Autenticar() {
+                    $.ajax({
+                        type: 'GET',
+                        url: 'https://localhost:44390/api/Clientes?login=' + this.inputLogin + '&senha=' + this.inputSenha,
+                        responseType: 'application/json',
+                        xhrFields: {
+                            withCredentials: false
+                        },
+                        headers: {
+                            'Access-Control-Allow-Credentials': true,
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods': 'GET',
+                            'Access-Control-Allow-Headers': 'application/json',
+                        },
+                        success: function (response) {
+                            if(response[0] == null){
+                                 alert("Você digitou uma senha errada.");
+                             }
+                             else
+                             {
+                                localStorage.idcliente = response[0].idcliente;
+                                window.location.href = "../Client/Emprestimo.html"
+                             }
+                        },
+                        error: function (error) {
+                            alert("Erro :/");
+                        }
+                    });
+
+                /*     axios
+                        .get('https://localhost:44390/api/Clientes?login=' + this.inputLogin + "&senha=" + this.inputSenha)
+                        .then((response) => {
+                             if(!response.data[0].idcliente >= 0){
+                                 alert("Você digitou uma senha errada.");
+                             }
+                             else
+                             {
+                                localStorage.idcliente = response.data[0].idcliente;
+                                alert(localStorage.idcliente);
+                             }
+
+                        })
+                        .catch((error) => {
+                            const response = error.response
+                            console.log(response.data.errors)
+                        }) */
+                }
+            }
+        });
+        console.log("pagina recarregada");
+    });
+
+</script>
+
+</html>
